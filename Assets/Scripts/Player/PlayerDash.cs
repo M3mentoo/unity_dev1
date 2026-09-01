@@ -1,0 +1,109 @@
+using UnityEngine;
+
+namespace Tutorial.Player
+{
+    [RequireComponent(typeof(Rigidbody2D), typeof(PlayerMovement))]
+    public sealed class PlayerDash : MonoBehaviour
+    {
+        [SerializeField] private KeyCode _dashKey = KeyCode.LeftShift;
+        [SerializeField, Min(0.01f)] private float _dashSpeed = 12f;
+        [SerializeField, Min(0.01f)] private float _dashDuration = 0.15f;
+        [SerializeField, Min(0f)] private float _dashCooldown = 0.5f;
+
+        private Rigidbody2D _rigidbody;
+        private PlayerMovement _movement;
+        private Vector2 _facingDirection = Vector2.right;
+        private Vector2 _activeDashDirection;
+        private float _dashTimeRemaining;
+        private float _cooldownTimeRemaining;
+        private float _savedGravityScale;
+        private bool _dashRequested;
+        private bool _isDashing;
+        private bool _movementWasEnabled;
+
+        private void Awake()
+        {
+            _rigidbody = GetComponent<Rigidbody2D>();
+            _movement = GetComponent<PlayerMovement>();
+        }
+
+        private void OnDisable()
+        {
+            _dashRequested = false;
+
+            if (_isDashing)
+            {
+                EndDash();
+            }
+        }
+
+        private void Update()
+        {
+            float horizontalInput = Input.GetAxisRaw("Horizontal");
+
+            if (!_isDashing && !Mathf.Approximately(horizontalInput, 0f))
+            {
+                _facingDirection = horizontalInput > 0f
+                    ? Vector2.right
+                    : Vector2.left;
+            }
+
+            if (Input.GetKeyDown(_dashKey))
+            {
+                _dashRequested = true;
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            if (_isDashing)
+            {
+                ContinueDash();
+                return;
+            }
+
+            _cooldownTimeRemaining = Mathf.Max(
+                0f,
+                _cooldownTimeRemaining - Time.fixedDeltaTime);
+
+            if (_dashRequested && _cooldownTimeRemaining <= 0f)
+            {
+                BeginDash();
+            }
+
+            _dashRequested = false;
+        }
+
+        private void BeginDash()
+        {
+            _isDashing = true;
+            _dashTimeRemaining = _dashDuration;
+            _movementWasEnabled = _movement.enabled;
+            _savedGravityScale = _rigidbody.gravityScale;
+            _activeDashDirection = _facingDirection;
+
+            _movement.enabled = false;
+            _rigidbody.gravityScale = 0f;
+            _rigidbody.velocity = _activeDashDirection * _dashSpeed;
+        }
+
+        private void ContinueDash()
+        {
+            _rigidbody.velocity = _activeDashDirection * _dashSpeed;
+            _dashTimeRemaining -= Time.fixedDeltaTime;
+
+            if (_dashTimeRemaining <= 0f)
+            {
+                EndDash();
+            }
+        }
+
+        private void EndDash()
+        {
+            _isDashing = false;
+            _rigidbody.gravityScale = _savedGravityScale;
+            _movement.enabled = _movementWasEnabled;
+            _cooldownTimeRemaining = _dashCooldown;
+        }
+    }
+}
