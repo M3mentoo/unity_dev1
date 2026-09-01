@@ -24,6 +24,7 @@ namespace Tutorial.Player
         private float _coyoteTimeRemaining;
         private float _jumpBufferTimeRemaining;
         private float _defaultGravityScale;
+        private float _horizontalControlLockTimeRemaining;
         private bool _jumpReleased;
 
         private void Awake()
@@ -38,6 +39,8 @@ namespace Tutorial.Player
             {
                 _rigidbody.gravityScale = _defaultGravityScale;
             }
+
+            _horizontalControlLockTimeRemaining = 0f;
         }
 
         private void Update()
@@ -105,6 +108,14 @@ namespace Tutorial.Player
 
         private void UpdateHorizontalVelocity(bool isGrounded)
         {
+            if (_horizontalControlLockTimeRemaining > 0f)
+            {
+                _horizontalControlLockTimeRemaining = Mathf.Max(
+                    0f,
+                    _horizontalControlLockTimeRemaining - Time.fixedDeltaTime);
+                return;
+            }
+
             float targetSpeed = _horizontalInput * _moveSpeed;
             float speedChangeRate = Mathf.Approximately(_horizontalInput, 0f)
                 ? _deceleration
@@ -139,6 +150,17 @@ namespace Tutorial.Player
                     _groundCheck.position,
                     _groundCheckRadius,
                     _groundLayer) != null;
+        }
+
+        public void Launch(Vector2 velocity, float horizontalControlLockTime)
+        {
+            _rigidbody.velocity = velocity;
+            _jumpBufferTimeRemaining = 0f;
+            _coyoteTimeRemaining = 0f;
+            _jumpReleased = false;
+            _horizontalControlLockTimeRemaining = Mathf.Max(
+                _horizontalControlLockTimeRemaining,
+                horizontalControlLockTime);
         }
 
         private void OnDrawGizmosSelected()

@@ -7,6 +7,7 @@ namespace Tutorial.Player
     public sealed class PlayerWallSlide : MonoBehaviour
     {
         public bool IsWallSliding { get; private set; }
+        public bool IsTouchingWall => WallDirection != 0;
         public int WallDirection { get; private set; }
 
         [SerializeField] private LayerMask _wallLayer;
