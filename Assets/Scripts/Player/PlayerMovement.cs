@@ -7,13 +7,16 @@ namespace Tutorial.Player
     {
         [SerializeField, Min(0f)] private float _moveSpeed = 6f;
         [SerializeField, Min(0f)] private float _jumpSpeed = 9f;
+        [SerializeField, Min(0f)] private float _coyoteTime = 0.1f;
+        [SerializeField, Min(0f)] private float _jumpBufferTime = 0.1f;
         [SerializeField] private Transform _groundCheck;
         [SerializeField] private LayerMask _groundLayer;
         [SerializeField, Min(0f)] private float _groundCheckRadius = 0.15f;
 
         private Rigidbody2D _rigidbody;
         private float _horizontalInput;
-        private bool _jumpRequested;
+        private float _coyoteTimeRemaining;
+        private float _jumpBufferTimeRemaining;
 
         private void Awake()
         {
@@ -26,24 +29,38 @@ namespace Tutorial.Player
 
             if (Input.GetButtonDown("Jump"))
             {
-                _jumpRequested = true;
+                _jumpBufferTimeRemaining = _jumpBufferTime;
             }
         }
 
         private void FixedUpdate()
         {
+            UpdateCoyoteTimer(IsGrounded());
+
             _rigidbody.velocity = new Vector2(
                 _horizontalInput * _moveSpeed,
                 _rigidbody.velocity.y);
 
-            if (_jumpRequested && IsGrounded())
+            if (_jumpBufferTimeRemaining > 0f && _coyoteTimeRemaining > 0f)
             {
                 _rigidbody.velocity = new Vector2(
                     _rigidbody.velocity.x,
                     _jumpSpeed);
+
+                _jumpBufferTimeRemaining = 0f;
+                _coyoteTimeRemaining = 0f;
             }
 
-            _jumpRequested = false;
+            _jumpBufferTimeRemaining = Mathf.Max(
+                0f,
+                _jumpBufferTimeRemaining - Time.fixedDeltaTime);
+        }
+
+        private void UpdateCoyoteTimer(bool isGrounded)
+        {
+            _coyoteTimeRemaining = isGrounded
+                ? _coyoteTime
+                : Mathf.Max(0f, _coyoteTimeRemaining - Time.fixedDeltaTime);
         }
 
         private bool IsGrounded()
