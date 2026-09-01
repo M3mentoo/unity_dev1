@@ -9,6 +9,7 @@ namespace Tutorial.Player
         [SerializeField, Min(0f)] private float _jumpSpeed = 9f;
         [SerializeField, Min(0f)] private float _coyoteTime = 0.1f;
         [SerializeField, Min(0f)] private float _jumpBufferTime = 0.1f;
+        [SerializeField, Range(0f, 1f)] private float _jumpCutMultiplier = 0.5f;
         [SerializeField] private Transform _groundCheck;
         [SerializeField] private LayerMask _groundLayer;
         [SerializeField, Min(0f)] private float _groundCheckRadius = 0.15f;
@@ -17,6 +18,7 @@ namespace Tutorial.Player
         private float _horizontalInput;
         private float _coyoteTimeRemaining;
         private float _jumpBufferTimeRemaining;
+        private bool _jumpReleased;
 
         private void Awake()
         {
@@ -30,6 +32,11 @@ namespace Tutorial.Player
             if (Input.GetButtonDown("Jump"))
             {
                 _jumpBufferTimeRemaining = _jumpBufferTime;
+            }
+
+            if (Input.GetButtonUp("Jump"))
+            {
+                _jumpReleased = true;
             }
         }
 
@@ -51,9 +58,18 @@ namespace Tutorial.Player
                 _coyoteTimeRemaining = 0f;
             }
 
+            if (_jumpReleased && _rigidbody.velocity.y > 0f)
+            {
+                _rigidbody.velocity = new Vector2(
+                    _rigidbody.velocity.x,
+                    _rigidbody.velocity.y * _jumpCutMultiplier);
+            }
+
             _jumpBufferTimeRemaining = Mathf.Max(
                 0f,
                 _jumpBufferTimeRemaining - Time.fixedDeltaTime);
+
+            _jumpReleased = false;
         }
 
         private void UpdateCoyoteTimer(bool isGrounded)
