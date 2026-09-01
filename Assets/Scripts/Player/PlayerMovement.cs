@@ -6,6 +6,8 @@ namespace Tutorial.Player
     public sealed class PlayerMovement : MonoBehaviour
     {
         [SerializeField, Min(0f)] private float _moveSpeed = 6f;
+        [SerializeField, Min(0f)] private float _acceleration = 45f;
+        [SerializeField, Min(0f)] private float _deceleration = 55f;
         [SerializeField, Min(0f)] private float _jumpSpeed = 9f;
         [SerializeField, Min(0f)] private float _coyoteTime = 0.1f;
         [SerializeField, Min(0f)] private float _jumpBufferTime = 0.1f;
@@ -44,9 +46,7 @@ namespace Tutorial.Player
         {
             UpdateCoyoteTimer(IsGrounded());
 
-            _rigidbody.velocity = new Vector2(
-                _horizontalInput * _moveSpeed,
-                _rigidbody.velocity.y);
+            UpdateHorizontalVelocity();
 
             if (_jumpBufferTimeRemaining > 0f && _coyoteTimeRemaining > 0f)
             {
@@ -70,6 +70,22 @@ namespace Tutorial.Player
                 _jumpBufferTimeRemaining - Time.fixedDeltaTime);
 
             _jumpReleased = false;
+        }
+
+        private void UpdateHorizontalVelocity()
+        {
+            float targetSpeed = _horizontalInput * _moveSpeed;
+            float speedChangeRate = Mathf.Approximately(_horizontalInput, 0f)
+                ? _deceleration
+                : _acceleration;
+            float horizontalVelocity = Mathf.MoveTowards(
+                _rigidbody.velocity.x,
+                targetSpeed,
+                speedChangeRate * Time.fixedDeltaTime);
+
+            _rigidbody.velocity = new Vector2(
+                horizontalVelocity,
+                _rigidbody.velocity.y);
         }
 
         private void UpdateCoyoteTimer(bool isGrounded)
