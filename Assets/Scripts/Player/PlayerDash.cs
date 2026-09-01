@@ -19,6 +19,7 @@ namespace Tutorial.Player
         private float _savedGravityScale;
         private bool _dashRequested;
         private bool _isDashing;
+        private bool _airDashAvailable = true;
         private bool _movementWasEnabled;
 
         private void Awake()
@@ -62,25 +63,39 @@ namespace Tutorial.Player
                 return;
             }
 
+            bool isGrounded = _movement.IsGrounded();
+
+            if (isGrounded)
+            {
+                _airDashAvailable = true;
+            }
+
             _cooldownTimeRemaining = Mathf.Max(
                 0f,
                 _cooldownTimeRemaining - Time.fixedDeltaTime);
 
-            if (_dashRequested && _cooldownTimeRemaining <= 0f)
+            if (_dashRequested
+                && _cooldownTimeRemaining <= 0f
+                && (isGrounded || _airDashAvailable))
             {
-                BeginDash();
+                BeginDash(isGrounded);
             }
 
             _dashRequested = false;
         }
 
-        private void BeginDash()
+        private void BeginDash(bool isGrounded)
         {
             _isDashing = true;
             _dashTimeRemaining = _dashDuration;
             _movementWasEnabled = _movement.enabled;
             _savedGravityScale = _rigidbody.gravityScale;
             _activeDashDirection = _facingDirection;
+
+            if (!isGrounded)
+            {
+                _airDashAvailable = false;
+            }
 
             _movement.enabled = false;
             _rigidbody.gravityScale = 0f;

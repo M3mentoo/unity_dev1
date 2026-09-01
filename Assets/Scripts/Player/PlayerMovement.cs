@@ -132,7 +132,7 @@ namespace Tutorial.Player
                 : Mathf.Max(0f, _coyoteTimeRemaining - Time.fixedDeltaTime);
         }
 
-        private bool IsGrounded()
+        public bool IsGrounded()
         {
             return _groundCheck != null
                 && Physics2D.OverlapCircle(
