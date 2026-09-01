@@ -809,6 +809,7 @@ GameObject:
   - component: {fileID: 1894818267}
   - component: {fileID: 1894818271}
   - component: {fileID: 1894818272}
+  - component: {fileID: 1894818273}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -969,7 +970,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 6
+  _acceleration: 45
+  _deceleration: 55
+  _airControlMultiplier: 0.6
   _jumpSpeed: 9
+  _coyoteTime: 0.1
+  _jumpBufferTime: 0.1
+  _jumpCutMultiplier: 0.5
+  _fallGravityMultiplier: 1.8
+  _maxFallSpeed: 18
   _groundCheck: {fileID: 1166061463}
   _groundLayer:
     serializedVersion: 2
@@ -989,6 +998,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _respawnPoint: {fileID: 385084171}
   _fallThreshold: -8
+--- !u!114 &1894818273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894818266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1a305033712e50468ecb3c48ec21051, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dashKey: 304
+  _dashSpeed: 12
+  _dashDuration: 0.15
+  _dashCooldown: 0.5
 --- !u!1001 &7048286168031799467
 PrefabInstance:
   m_ObjectHideFlags: 0
