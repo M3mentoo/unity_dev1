@@ -13,6 +13,8 @@ namespace Tutorial.Player
         [SerializeField, Min(0f)] private float _coyoteTime = 0.1f;
         [SerializeField, Min(0f)] private float _jumpBufferTime = 0.1f;
         [SerializeField, Range(0f, 1f)] private float _jumpCutMultiplier = 0.5f;
+        [SerializeField, Min(1f)] private float _fallGravityMultiplier = 1.8f;
+        [SerializeField, Min(0.01f)] private float _maxFallSpeed = 18f;
         [SerializeField] private Transform _groundCheck;
         [SerializeField] private LayerMask _groundLayer;
         [SerializeField, Min(0f)] private float _groundCheckRadius = 0.15f;
@@ -21,11 +23,21 @@ namespace Tutorial.Player
         private float _horizontalInput;
         private float _coyoteTimeRemaining;
         private float _jumpBufferTimeRemaining;
+        private float _defaultGravityScale;
         private bool _jumpReleased;
 
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
+            _defaultGravityScale = _rigidbody.gravityScale;
+        }
+
+        private void OnDisable()
+        {
+            if (_rigidbody != null)
+            {
+                _rigidbody.gravityScale = _defaultGravityScale;
+            }
         }
 
         private void Update()
@@ -67,11 +79,28 @@ namespace Tutorial.Player
                     _rigidbody.velocity.y * _jumpCutMultiplier);
             }
 
+            UpdateGravity(isGrounded);
+
             _jumpBufferTimeRemaining = Mathf.Max(
                 0f,
                 _jumpBufferTimeRemaining - Time.fixedDeltaTime);
 
             _jumpReleased = false;
+        }
+
+        private void UpdateGravity(bool isGrounded)
+        {
+            bool isFalling = !isGrounded && _rigidbody.velocity.y < 0f;
+            _rigidbody.gravityScale = isFalling
+                ? _defaultGravityScale * _fallGravityMultiplier
+                : _defaultGravityScale;
+
+            if (_rigidbody.velocity.y < -_maxFallSpeed)
+            {
+                _rigidbody.velocity = new Vector2(
+                    _rigidbody.velocity.x,
+                    -_maxFallSpeed);
+            }
         }
 
         private void UpdateHorizontalVelocity(bool isGrounded)
