@@ -1,0 +1,44 @@
+# Unity generated directories
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+
+# IDE and editor files
+.vs/
+.vscode/
+.idea/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Crash and diagnostic artifacts
+sysinfo.txt
+*.stackdump
+
+# Local Codex / Unity MCP configuration and generated skills
+.agents/
+.codex/
+
+# Exported installer packages are reproducible and not project source
+*.unitypackage
+
