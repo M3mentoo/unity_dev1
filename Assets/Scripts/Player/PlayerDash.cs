@@ -5,6 +5,8 @@ namespace Tutorial.Player
     [RequireComponent(typeof(Rigidbody2D), typeof(PlayerMovement))]
     public sealed class PlayerDash : MonoBehaviour
     {
+        public bool IsDashing => _isDashing;
+
         [SerializeField] private KeyCode _dashKey = KeyCode.LeftShift;
         [SerializeField, Min(0.01f)] private float _dashSpeed = 12f;
         [SerializeField, Min(0.01f)] private float _dashDuration = 0.15f;
