@@ -8,6 +8,7 @@ namespace Tutorial.Player
         [SerializeField, Min(0f)] private float _moveSpeed = 6f;
         [SerializeField, Min(0f)] private float _acceleration = 45f;
         [SerializeField, Min(0f)] private float _deceleration = 55f;
+        [SerializeField, Range(0f, 1f)] private float _airControlMultiplier = 0.6f;
         [SerializeField, Min(0f)] private float _jumpSpeed = 9f;
         [SerializeField, Min(0f)] private float _coyoteTime = 0.1f;
         [SerializeField, Min(0f)] private float _jumpBufferTime = 0.1f;
@@ -44,9 +45,10 @@ namespace Tutorial.Player
 
         private void FixedUpdate()
         {
-            UpdateCoyoteTimer(IsGrounded());
+            bool isGrounded = IsGrounded();
 
-            UpdateHorizontalVelocity();
+            UpdateCoyoteTimer(isGrounded);
+            UpdateHorizontalVelocity(isGrounded);
 
             if (_jumpBufferTimeRemaining > 0f && _coyoteTimeRemaining > 0f)
             {
@@ -72,12 +74,18 @@ namespace Tutorial.Player
             _jumpReleased = false;
         }
 
-        private void UpdateHorizontalVelocity()
+        private void UpdateHorizontalVelocity(bool isGrounded)
         {
             float targetSpeed = _horizontalInput * _moveSpeed;
             float speedChangeRate = Mathf.Approximately(_horizontalInput, 0f)
                 ? _deceleration
                 : _acceleration;
+
+            if (!isGrounded)
+            {
+                speedChangeRate *= _airControlMultiplier;
+            }
+
             float horizontalVelocity = Mathf.MoveTowards(
                 _rigidbody.velocity.x,
                 targetSpeed,
