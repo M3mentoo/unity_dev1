@@ -203,6 +203,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveSpeed: 2
   _patrolDistance: 1.5
+  _hitStunDuration: 0.2
 --- !u!114 &3723942826209400606
 MonoBehaviour:
   m_ObjectHideFlags: 0
