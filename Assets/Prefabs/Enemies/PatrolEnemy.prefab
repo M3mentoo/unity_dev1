@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 661499303910443236}
   - component: {fileID: 2135159477802417924}
   - component: {fileID: 8944024897675079438}
+  - component: {fileID: 3723942826209400606}
   m_Layer: 7
   m_Name: PatrolEnemy
   m_TagString: Untagged
@@ -202,6 +203,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveSpeed: 2
   _patrolDistance: 1.5
+--- !u!114 &3723942826209400606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1539323514820001409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ba3121b0684d5844809d1a4645b3823, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _flashColor: {r: 1, g: 0.35, b: 0.35, a: 1}
+  _flashDuration: 0.12
 --- !u!1 &1835907948038101206
 GameObject:
   m_ObjectHideFlags: 0
