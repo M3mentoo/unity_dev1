@@ -10,6 +10,8 @@ namespace Tutorial.Enemies
         [SerializeField, Min(0f)] private float _moveSpeed = 2f;
         [SerializeField, Min(0.01f)] private float _patrolDistance = 2f;
         [SerializeField, Min(0f)] private float _hitStunDuration = 0.15f;
+        [SerializeField, Min(0f)] private float _knockbackSpeed = 4f;
+        [SerializeField, Min(0f)] private float _knockbackUpwardSpeed = 2f;
 
         private Rigidbody2D _rigidbody;
         private Health _health;
@@ -50,10 +52,6 @@ namespace Tutorial.Enemies
                 _hitStunTimeRemaining = Mathf.Max(
                     0f,
                     _hitStunTimeRemaining - Time.fixedDeltaTime);
-
-                _rigidbody.velocity = new Vector2(
-                    0f,
-                    _rigidbody.velocity.y);
                 return;
             }
 
@@ -73,9 +71,18 @@ namespace Tutorial.Enemies
                 _rigidbody.velocity.y);
         }
 
-        private void HandleDamaged()
+        private void HandleDamaged(DamageInfo damage)
         {
             _hitStunTimeRemaining = _hitStunDuration;
+
+            float horizontalDirection = Mathf.Approximately(
+                damage.Direction.x,
+                0f)
+                ? 0f
+                : Mathf.Sign(damage.Direction.x);
+            _rigidbody.velocity = new Vector2(
+                horizontalDirection * _knockbackSpeed,
+                _knockbackUpwardSpeed);
         }
 
         private void OnDrawGizmosSelected()

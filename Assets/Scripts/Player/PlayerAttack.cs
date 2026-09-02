@@ -59,7 +59,11 @@ namespace Tutorial.Player
                     continue;
                 }
 
-                targetHealth.TryTakeDamage(_attackDamage);
+                Vector2 damageDirection = Vector2.right
+                    * _movement.FacingDirection;
+
+                targetHealth.TryTakeDamage(
+                    new DamageInfo(_attackDamage, damageDirection));
             }
         }
 

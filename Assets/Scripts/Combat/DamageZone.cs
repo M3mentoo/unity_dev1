@@ -32,7 +32,12 @@ namespace Tutorial.Combat
 
             if (health != null)
             {
-                health.TryTakeDamage(_damage);
+                Vector2 damageDirection =
+                    (Vector2)health.transform.position
+                    - (Vector2)transform.position;
+
+                health.TryTakeDamage(
+                    new DamageInfo(_damage, damageDirection));
             }
         }
     }

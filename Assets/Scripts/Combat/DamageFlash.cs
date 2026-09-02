@@ -40,7 +40,7 @@ namespace Tutorial.Combat
             _spriteRenderer.color = _baseColor;
         }
 
-        private void HandleDamaged()
+        private void HandleDamaged(DamageInfo _)
         {
             if (_flashRoutine != null)
             {
