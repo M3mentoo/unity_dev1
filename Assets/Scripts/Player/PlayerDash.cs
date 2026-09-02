@@ -14,7 +14,6 @@ namespace Tutorial.Player
 
         private Rigidbody2D _rigidbody;
         private PlayerMovement _movement;
-        private Vector2 _facingDirection = Vector2.right;
         private Vector2 _activeDashDirection;
         private float _dashTimeRemaining;
         private float _cooldownTimeRemaining;
@@ -42,15 +41,6 @@ namespace Tutorial.Player
 
         private void Update()
         {
-            float horizontalInput = Input.GetAxisRaw("Horizontal");
-
-            if (!_isDashing && !Mathf.Approximately(horizontalInput, 0f))
-            {
-                _facingDirection = horizontalInput > 0f
-                    ? Vector2.right
-                    : Vector2.left;
-            }
-
             if (Input.GetKeyDown(_dashKey))
             {
                 _dashRequested = true;
@@ -92,7 +82,9 @@ namespace Tutorial.Player
             _dashTimeRemaining = _dashDuration;
             _movementWasEnabled = _movement.enabled;
             _savedGravityScale = _rigidbody.gravityScale;
-            _activeDashDirection = _facingDirection;
+            _activeDashDirection = new Vector2(
+                _movement.FacingDirection,
+                0f);
 
             if (!isGrounded)
             {

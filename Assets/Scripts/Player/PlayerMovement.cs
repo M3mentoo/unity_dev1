@@ -5,6 +5,8 @@ namespace Tutorial.Player
     [RequireComponent(typeof(Rigidbody2D))]
     public sealed class PlayerMovement : MonoBehaviour
     {
+        public float FacingDirection { get; private set; } = 1f;
+
         [SerializeField, Min(0f)] private float _moveSpeed = 6f;
         [SerializeField, Min(0f)] private float _acceleration = 45f;
         [SerializeField, Min(0f)] private float _deceleration = 55f;
@@ -46,6 +48,11 @@ namespace Tutorial.Player
         private void Update()
         {
             _horizontalInput = Input.GetAxisRaw("Horizontal");
+
+            if (!Mathf.Approximately(_horizontalInput, 0f))
+            {
+                FacingDirection = Mathf.Sign(_horizontalInput);
+            }
 
             if (Input.GetButtonDown("Jump"))
             {
@@ -155,6 +162,12 @@ namespace Tutorial.Player
         public void Launch(Vector2 velocity, float horizontalControlLockTime)
         {
             _rigidbody.velocity = velocity;
+
+            if (!Mathf.Approximately(velocity.x, 0f))
+            {
+                FacingDirection = Mathf.Sign(velocity.x);
+            }
+
             _jumpBufferTimeRemaining = 0f;
             _coyoteTimeRemaining = 0f;
             _jumpReleased = false;
