@@ -813,6 +813,7 @@ GameObject:
   - component: {fileID: 1894818273}
   - component: {fileID: 1894818274}
   - component: {fileID: 1894818275}
+  - component: {fileID: 1894818276}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1049,6 +1050,20 @@ MonoBehaviour:
   _horizontalJumpSpeed: 7
   _verticalJumpSpeed: 9
   _horizontalControlLockTime: 0.15
+--- !u!114 &1894818276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894818266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fa2ecf9cdb1cf04c87601e76780540b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 5
+  _invulnerabilityDuration: 0.75
 --- !u!1001 &2009530412
 PrefabInstance:
   m_ObjectHideFlags: 0
