@@ -1,12 +1,11 @@
 using System.Collections;
-using Tutorial.Combat;
 using UnityEngine;
 
-namespace Tutorial.Presentation
+namespace Tutorial.Combat
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(SpriteRenderer), typeof(Health))]
-    public sealed class PlayerDamageFlash : MonoBehaviour
+    public sealed class DamageFlash : MonoBehaviour
     {
         [SerializeField] private Color _flashColor = new Color(1f, 0.35f, 0.35f, 1f);
         [SerializeField, Min(0f)] private float _flashDuration = 0.12f;
