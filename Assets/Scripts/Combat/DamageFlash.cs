@@ -14,7 +14,6 @@ namespace Tutorial.Combat
         private Health _health;
         private Coroutine _flashRoutine;
         private Color _baseColor;
-        private int _previousHealth;
 
         private void Awake()
         {
@@ -25,13 +24,12 @@ namespace Tutorial.Combat
         private void OnEnable()
         {
             _baseColor = _spriteRenderer.color;
-            _previousHealth = _health.CurrentHealth;
-            _health.HealthChanged += HandleHealthChanged;
+            _health.Damaged += HandleDamaged;
         }
 
         private void OnDisable()
         {
-            _health.HealthChanged -= HandleHealthChanged;
+            _health.Damaged -= HandleDamaged;
 
             if (_flashRoutine != null)
             {
@@ -42,16 +40,8 @@ namespace Tutorial.Combat
             _spriteRenderer.color = _baseColor;
         }
 
-        private void HandleHealthChanged(int currentHealth, int _)
+        private void HandleDamaged()
         {
-            bool tookDamage = currentHealth < _previousHealth;
-            _previousHealth = currentHealth;
-
-            if (!tookDamage)
-            {
-                return;
-            }
-
             if (_flashRoutine != null)
             {
                 StopCoroutine(_flashRoutine);

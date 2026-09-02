@@ -7,6 +7,7 @@ namespace Tutorial.Combat
     public sealed class Health : MonoBehaviour
     {
         public event Action<int, int> HealthChanged;
+        public event Action Damaged;
         public event Action Died;
 
         public int MaxHealth => _maxHealth;
@@ -34,6 +35,7 @@ namespace Tutorial.Combat
             CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
             _invulnerableUntil = Time.time + _invulnerabilityDuration;
             HealthChanged?.Invoke(CurrentHealth, _maxHealth);
+            Damaged?.Invoke();
 
             Debug.Log(
                 $"{name} health: {CurrentHealth}/{_maxHealth}",

@@ -1,31 +1,40 @@
+using Tutorial.Combat;
 using UnityEngine;
 
 namespace Tutorial.Enemies
 {
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(Rigidbody2D), typeof(Health))]
     public sealed class EnemyPatrol : MonoBehaviour
     {
         [SerializeField, Min(0f)] private float _moveSpeed = 2f;
         [SerializeField, Min(0.01f)] private float _patrolDistance = 2f;
+        [SerializeField, Min(0f)] private float _hitStunDuration = 0.15f;
 
         private Rigidbody2D _rigidbody;
+        private Health _health;
         private float _startX;
         private float _direction;
+        private float _hitStunTimeRemaining;
 
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
+            _health = GetComponent<Health>();
         }
 
         private void OnEnable()
         {
             _startX = _rigidbody.position.x;
             _direction = 1f;
+            _health.Damaged += HandleDamaged;
         }
 
         private void OnDisable()
         {
+            _health.Damaged -= HandleDamaged;
+            _hitStunTimeRemaining = 0f;
+
             if (_rigidbody != null)
             {
                 _rigidbody.velocity = new Vector2(
@@ -36,6 +45,18 @@ namespace Tutorial.Enemies
 
         private void FixedUpdate()
         {
+            if (_hitStunTimeRemaining > 0f)
+            {
+                _hitStunTimeRemaining = Mathf.Max(
+                    0f,
+                    _hitStunTimeRemaining - Time.fixedDeltaTime);
+
+                _rigidbody.velocity = new Vector2(
+                    0f,
+                    _rigidbody.velocity.y);
+                return;
+            }
+
             float distanceFromStart = _rigidbody.position.x - _startX;
 
             if (distanceFromStart >= _patrolDistance)
@@ -50,6 +71,11 @@ namespace Tutorial.Enemies
             _rigidbody.velocity = new Vector2(
                 _direction * _moveSpeed,
                 _rigidbody.velocity.y);
+        }
+
+        private void HandleDamaged()
+        {
+            _hitStunTimeRemaining = _hitStunDuration;
         }
 
         private void OnDrawGizmosSelected()
